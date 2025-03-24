@@ -153,12 +153,10 @@ body {
   top: 0;
   transform: translate(-50%, 0%);
   /* z-index: -1; */
-  border-radius: 3.4rem;
+  border-radius: 3.55rem;
   margin-top: 0.8rem;
   border: none;
   overflow: hidden;
-  border-bottom-left-radius: 3.2rem;
-  border-bottom-right-radius: 3.2rem;
   overflow-y: hidden;
 }
 
