@@ -1,0 +1,17 @@
+{
+  "name": "phone-modal",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron": "^35.0.3",
+    "electron-builder": "^25.1.8"
+  }
+}

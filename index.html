@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Mobile Previewer</title>
+  </head>
+  <body>
+    <div class="toolbar">
+      <div class="blur"></div>
+      <div class="name-wrapper">
+        <img src="./icons/close.svg" id="closeIcon" />
+        <h3 class="model-name">iPhone 15 Pro</h3>
+      </div>
+      <div class="wrapper">
+        <button class="load-link" onclick="renderUrl()">
+          <img src="./icons/link.svg" />
+        </button>
+        <div onclick="changeDeviceModel()" class="change-model">Model <span class="model-color">White)</span></div>
+      </div>
+    </div>
+    <div class="device-mask">
+      <l-line-spinner
+        size="30"
+        stroke="2"
+        speed=".65"
+        color="gray"
+        style="position: absolute; left: 50%; top: 45%; transform: translate(-50%, -50%)"
+      ></l-line-spinner>
+      <iframe class="frame" src="/"></iframe>
+      <img src="./models/iphone-white.png" class="phone" />
+      <img src="./models/notch.png" class="notch" />
+    </div>
+    <div class="urlWrapperInput">
+      <input type="text" class="url-input" placeholder="Enter URL" oninput="checkInputPrefix(this.value)" />
+      <p class="url-info">After entering url press enter</p>
+    </div>
+    <h5 class="infoOnLoad">Enter Url</h5>
+  </body>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/lineSpinner.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const deviceSize = document.querySelector(".phone").getBoundingClientRect();
+      document.querySelector(".frame").style.height = `${deviceSize.height - 25}px`;
+      document.querySelector(".frame").style.width = `${deviceSize.width - 31.5}px`;
+    });
+
+    window.addEventListener("resize", () => {
+      const deviceSize = document.querySelector(".phone").getBoundingClientRect();
+      document.querySelector(".frame").style.height = `${deviceSize.height - 25}px`;
+      document.querySelector(".frame").style.width = `${deviceSize.width - 31.5}px`;
+    });
+
+    const { ipcRenderer } = require("electron");
+    const models = ["white", "natural", "blue"];
+    let modelIndex = 0;
+
+    document.getElementById("closeIcon").addEventListener("click", () => {
+      ipcRenderer.send("close-app");
+    });
+
+    const changeDeviceModel = () => {
+      modelIndex++;
+      if (modelIndex == 3) {
+        modelIndex = 0;
+      }
+      let deviceModelImage = document.querySelector(".phone");
+      deviceModelImage.src = `./models/iphone-${models[modelIndex]}.png`;
+      document.querySelector(".model-color").innerText = `${models[modelIndex]})`;
+    };
+
+    const renderUrl = () => {
+      if (document.querySelector(".url-input").classList.contains("activeUrlInput")) {
+        document.querySelector(".url-input").classList.remove("activeUrlInput");
+        document.querySelector(".urlWrapperInput").style.transform = "translate(-50%, -40%)";
+        document.querySelector(".urlWrapperInput").style.opacity = "0";
+        document.querySelector(".device-mask ").style.opacity = "1";
+        document.querySelector(".device-mask ").style.transform = "";
+        setTimeout(() => {
+          document.querySelector(".urlWrapperInput").style.display = "none";
+          document.querySelector(".url-input").value = "";
+        }, 500);
+      } else {
+        document.querySelector(".url-input").classList.add("activeUrlInput");
+        document.querySelector(".urlWrapperInput").style.display = "flex";
+        setTimeout(() => {
+          document.querySelector(".urlWrapperInput").style.transform = "translate(-50%, -50%)";
+          document.querySelector(".urlWrapperInput").style.opacity = "1";
+          document.querySelector(".device-mask ").style.opacity = ".2";
+          document.querySelector(".device-mask ").style.transform = "scale(.9)";
+          document.querySelector(".url-input").focus();
+        }, 10);
+      }
+    };
+
+    document.querySelector(".urlWrapperInput").addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        renderUrl();
+        if (document.querySelector(".url-input").value == "") return;
+        document.querySelector(".frame").src = document.querySelector(".url-input").value;
+      }
+    });
+
+    const checkInputPrefix = (value) => {
+      if (value && value.charAt(0).toLowerCase() !== "h") {
+        document.querySelector(".url-input").value = `https://${value}`;
+      }
+    };
+  </script>
+</html>
