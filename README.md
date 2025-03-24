@@ -8,7 +8,7 @@ This app allows developers and designers to preview any website (local or hosted
 - Easy-to-Use Interface: Simply input a URL and view the result instantly within the mockup.
 
 ## Installation
--git clone repo
--npm install
--npm run build
--.exe file is located in dist folder
+- git clone repo
+- npm install
+- npm run build
+- .exe file is located in dist folder
